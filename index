@@ -1,0 +1,1204 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1220" />
+  <title> Warehouse Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg: #080e19;
+      --panel: #101a2a;
+      --panel2: #131f32;
+      --line: #233149;
+      --text: #eef4ff;
+      --muted: #8d9bb2;
+      --accent: #36dbc0;
+      --accent2: #1cae9b;
+      --blue: #70a7ff;
+      --orange: #ffbb69;
+      --red: #ff727e;
+      --green: #6be2a4;
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 85% 0%, rgba(36, 135, 133, .12), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 248px;
+      flex-shrink: 0;
+      padding: 26px 17px;
+      background: rgba(12, 20, 34, .94);
+      border-left: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+    }
+
+    .brand-logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #168f91);
+      color: #07141b;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 17px;
+      box-shadow: 0 8px 25px #36dbc027;
+    }
+
+    .brand-name { font-weight: 800; font-size: 18px; }
+    .brand-sub { font-size: 10px; color: var(--muted); letter-spacing: 1.4px; }
+
+    .nav-title {
+      color: #65748b;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0 12px;
+      margin-bottom: 9px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: #9eacc1;
+      font-size: 13px;
+      margin: 4px 0;
+      border: 1px solid transparent;
+    }
+
+    .nav-item.active {
+      background: #18333a;
+      border-color: #24504e;
+      color: var(--accent);
+    }
+
+    .nav-item i { width: 18px; height: 18px; }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 16px;
+      border-radius: 15px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .sidebar-bottom p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+      margin: 7px 0 0;
+    }
+
+    .main {
+      min-width: 0;
+      flex: 1;
+      padding: 28px clamp(16px, 3vw, 38px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 1.1px;
+    }
+
+    h1 {
+      font-size: clamp(22px, 3vw, 30px);
+      margin: 3px 0 4px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .live {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 13px;
+      border: 1px solid #24504e;
+      background: #102a2b;
+      color: var(--accent);
+      border-radius: 11px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: var(--panel2);
+      border-radius: 11px;
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { background: var(--accent); color: #06181a; border-color: var(--accent); font-weight: 800; }
+    .btn:disabled { opacity: .5; cursor: wait; }
+    .btn i { width: 16px; height: 16px; }
+
+    .notice {
+      display: none;
+      border: 1px solid #6a4930;
+      background: #2b211a;
+      color: #ffd2a4;
+      padding: 14px 16px;
+      border-radius: 13px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .notice.error { display: block; }
+    .notice.success {
+      display: block;
+      border-color: #24504e;
+      background: #102a2b;
+      color: var(--accent);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 23px;
+    }
+
+    .stat {
+      background: linear-gradient(145deg, #142136, #101827);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat::after {
+      content: "";
+      position: absolute;
+      left: -20px;
+      top: -35px;
+      width: 90px;
+      height: 90px;
+      background: var(--glow, #36dbc0);
+      opacity: .07;
+      filter: blur(24px);
+      border-radius: 50%;
+    }
+
+    .stat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-icon {
+      display: grid;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      background: #1b3041;
+      color: var(--glow, var(--accent));
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .stat-icon i { width: 19px; height: 19px; }
+
+    .stat-value {
+      margin-top: 17px;
+      font-size: clamp(23px, 2.7vw, 32px);
+      font-weight: 800;
+      direction: ltr;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .stat-foot {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(270px, .85fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(16, 26, 42, .94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 19px 21px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .panel-desc {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-wrap {
+      flex: 1 1 190px;
+      position: relative;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--muted);
+    }
+
+    .field {
+      background: #0b1422;
+      border: 1px solid #293850;
+      border-radius: 10px;
+      color: var(--text);
+      outline: none;
+      padding: 10px 12px;
+      font-size: 11px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .search-wrap .field { padding-right: 36px; }
+    .field:focus { border-color: var(--accent); }
+    select.field { cursor: pointer; }
+    .filter-select { width: 160px; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th {
+      color: #8d9bb2;
+      font-size: 10px;
+      font-weight: 700;
+      background: #111c2d;
+      padding: 14px 20px;
+    }
+
+    td {
+      border-top: 1px solid #1c293c;
+      padding: 13px 20px;
+      font-size: 11px;
+    }
+
+    tbody tr:hover { background: #162438; }
+
+    .product-name {
+      font-weight: 700;
+      color: #e8effb;
+    }
+
+    .product-code {
+      font-size: 9px;
+      color: #71819a;
+      margin-top: 2px;
+    }
+
+    .qty {
+      font-weight: 800;
+      color: var(--accent);
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .qty.zero { color: #78869b; }
+    .qty.negative { color: var(--red); }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 7px;
+      background: #18342f;
+      color: var(--green);
+      font-size: 10px;
+    }
+
+    .pill.empty { background: #252b37; color: #a4afbf; }
+    .pill.danger { background: #3b2029; color: var(--red); }
+
+    .table-footer {
+      padding: 13px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .warehouse-list {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .warehouse-card {
+      background: #111c2c;
+      border: 1px solid #25334a;
+      border-radius: 13px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: right;
+      color: var(--text);
+      width: 100%;
+      transition: .2s;
+    }
+
+    .warehouse-card:hover, .warehouse-card.selected {
+      border-color: var(--accent);
+      background: #142b31;
+    }
+
+    .warehouse-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .warehouse-icon {
+      width: 37px;
+      height: 37px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      background: #1a2b43;
+      flex-shrink: 0;
+    }
+
+    .warehouse-icon i { width: 18px; height: 18px; }
+
+    .warehouse-name {
+      font-size: 12px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .warehouse-meta {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .warehouse-total {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .warehouse-total strong {
+      font-size: 20px;
+      direction: ltr;
+    }
+
+    .warehouse-total span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .section-gap { margin-top: 20px; }
+
+    .activity-list { padding: 5px 20px 10px; }
+
+    .activity {
+      display: flex;
+      gap: 12px;
+      padding: 15px 0;
+      border-bottom: 1px solid #1e2a3c;
+    }
+
+    .activity:last-child { border-bottom: 0; }
+
+    .activity-icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      background: #18342f;
+      color: var(--accent);
+    }
+
+    .activity-icon i { width: 16px; height: 16px; }
+
+    .activity-title { font-size: 11px; font-weight: 700; line-height: 1.8; }
+    .activity-desc { color: var(--muted); font-size: 10px; margin-top: 3px; line-height: 1.8; }
+    .activity-date { color: #708099; font-size: 9px; margin-top: 5px; direction: ltr; text-align: right; }
+
+    .warning-list { padding: 5px 20px 15px; }
+
+    .warning-item {
+      padding: 12px;
+      background: #2c2025;
+      border: 1px solid #51303a;
+      border-radius: 11px;
+      margin-top: 10px;
+    }
+
+    .warning-title { color: #ff9ca5; font-size: 11px; font-weight: 700; }
+    .warning-desc { color: #d4b1b5; font-size: 10px; line-height: 1.8; margin-top: 5px; }
+
+    .empty {
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 2;
+    }
+
+    .empty i {
+      display: block;
+      margin: 0 auto 10px;
+      width: 28px;
+      height: 28px;
+      color: #63748b;
+    }
+
+    .footer {
+      color: #637188;
+      font-size: 10px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 23px 3px 5px;
+    }
+
+    .footer strong { color: #91a1b7; }
+
+    .loading {
+      position: relative;
+      overflow: hidden;
+      color: transparent !important;
+      background: #1c2a3e !important;
+      border-radius: 6px;
+      min-height: 20px;
+    }
+
+    .loading::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, #ffffff0c, transparent);
+      animation: shimmer 1.4s infinite;
+    }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    @media (max-width: 1200px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-main { grid-template-columns: minmax(0, 1fr); }
+      .sidebar { width: 215px; }
+    }
+
+    @media (max-width: 760px) {
+      .app { display: block; }
+      .sidebar {
+        width: 100%;
+        padding: 13px 15px;
+        border-left: 0;
+        border-bottom: 1px solid var(--line);
+        gap: 0;
+      }
+      .brand { padding: 0 3px; }
+      .sidebar nav, .sidebar-bottom { display: none; }
+      .main { padding: 20px 13px; }
+      .topbar { align-items: flex-start; }
+      .top-actions { flex-direction: column-reverse; align-items: flex-end; }
+      .live { font-size: 10px; }
+      .stats { gap: 9px; }
+      .stat { padding: 14px; border-radius: 14px; }
+      .stat-head { font-size: 10px; }
+      .stat-icon { width: 31px; height: 31px; }
+      .stat-value { font-size: 24px; margin-top: 12px; }
+      .panel-head { padding: 15px; }
+      .filters { padding: 12px; }
+      .filter-select { flex: 1 1 130px; width: auto; }
+      th, td { padding: 12px 14px; }
+      .table-footer { padding: 12px 14px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">BBE</div>
+      <div>
+        <div class="brand-name">BBE WAREHOUSE</div>
+        <div class="brand-sub">MANAGEMENT SYSTEM</div>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav-title">القائمة الرئيسية</div>
+      <div class="nav-item active"><i data-lucide="layout-dashboard"></i> لوحة التحكم</div>
+      <div class="nav-item"><i data-lucide="warehouse"></i> أرصدة المخازن</div>
+      <div class="nav-item"><i data-lucide="package"></i> الأصناف والمعدات</div>
+      <div class="nav-item"><i data-lucide="arrow-left-right"></i> حركة التحويلات</div>
+      <div class="nav-item"><i data-lucide="shield-alert"></i> تنبيهات الأرصدة</div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700">
+        <i data-lucide="shield-check" style="color:var(--accent);width:18px"></i>
+        نظام متابعة المخزون
+      </div>
+      <p>متابعة أرصدة الأصناف وحركة التحويلات بين المخازن من مصدر بيانات مركزي.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">BBE / INVENTORY CONTROL</div>
+        <h1>لوحة تحكم المخازن</h1>
+        <div class="subtitle">متابعة الأرصدة وحركة الأصناف بين المواقع</div>
+      </div>
+      <div class="top-actions">
+        <div class="live"><span class="live-dot"></span><span id="connectionText">جاري الاتصال...</span></div>
+        <button class="btn primary" id="refreshBtn" onclick="loadDashboard()">
+          <i data-lucide="refresh-cw"></i> تحديث البيانات
+        </button>
+      </div>
+    </header>
+
+    <div id="notice" class="notice"></div>
+
+    <section class="stats">
+      <article class="stat" style="--glow:#36dbc0">
+        <div class="stat-head"><span>إجمالي الوحدات بالمخازن</span><span class="stat-icon"><i data-lucide="boxes"></i></span></div>
+        <div class="stat-value" id="totalUnits">—</div>
+        <div class="stat-foot">إجمالي الكميات المسجلة حاليًا</div>
+      </article>
+
+      <article class="stat" style="--glow:#70a7ff">
+        <div class="stat-head"><span>المخازن المسجلة</span><span class="stat-icon"><i data-lucide="warehouse"></i></span></div>
+        <div class="stat-value" id="warehouseCount">—</div>
+        <div class="stat-foot">المخازن الموجودة في سجلات البيانات</div>
+      </article>
+
+      <article class="stat" style="--glow:#ffbb69">
+        <div class="stat-head"><span>عدد الأصناف</span><span class="stat-icon"><i data-lucide="package"></i></span></div>
+        <div class="stat-value" id="productCount">—</div>
+        <div class="stat-foot">الأصناف المعرفة في سجل الرصيد</div>
+      </article>
+
+      <article class="stat" style="--glow:#ff727e">
+        <div class="stat-head"><span>التنبيهات</span><span class="stat-icon"><i data-lucide="alert-triangle"></i></span></div>
+        <div class="stat-value" id="warningCount">—</div>
+        <div class="stat-foot">تنبيهات تحتاج إلى المراجعة</div>
+      </article>
+    </section>
+
+    <div class="grid-main">
+      <div>
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">تفاصيل أرصدة الأصناف</h2>
+              <div class="panel-desc" id="tableSubtitle">الرصيد الحالي على مستوى جميع المخازن</div>
+            </div>
+            <button class="btn" onclick="exportCSV()"><i data-lucide="download"></i> تصدير CSV</button>
+          </div>
+
+          <div class="filters">
+            <div class="search-wrap">
+              <i data-lucide="search"></i>
+              <input class="field" id="productSearch" placeholder="ابحث عن اسم الصنف..." oninput="renderProducts()">
+            </div>
+            <select class="field filter-select" id="warehouseFilter" onchange="onWarehouseChange()">
+              <option value="">كل المخازن</option>
+            </select>
+            <select class="field filter-select" id="stockFilter" onchange="renderProducts()">
+              <option value="all">كل الأرصدة</option>
+              <option value="available">الأصناف المتاحة فقط</option>
+              <option value="zero">الأصناف ذات الرصيد صفر</option>
+              <option value="negative">الأرصدة السالبة</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>اسم الصنف</th>
+                  <th id="quantityHeader">إجمالي الرصيد</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="productRows">
+                <tr><td colspan="4"><div class="empty">جاري تحميل بيانات الأصناف...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-footer">
+            <span id="productResultCount">في انتظار البيانات</span>
+            <span id="lastUpdated">آخر تحديث: —</span>
+          </div>
+        </section>
+
+        <section class="panel section-gap">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">أحدث التحويلات</h2>
+              <div class="panel-desc">آخر حركات التحويل المسجلة في النموذج</div>
+            </div>
+            <i data-lucide="arrow-left-right" style="color:var(--accent);width:20px"></i>
+          </div>
+          <div class="activity-list" id="recentTransfers">
+            <div class="empty">جاري تحميل التحويلات...</div>
+          </div>
+        </section>
+      </div>
+
+      <div>
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">المخازن</h2>
+              <div class="panel-desc">اضغط على مخزن لعرض أرصدته</div>
+            </div>
+            <i data-lucide="map-pin" style="color:var(--blue);width:19px"></i>
+          </div>
+          <div class="warehouse-list" id="warehouseList">
+            <div class="empty">جاري تحميل المخازن...</div>
+          </div>
+        </section>
+
+        <section class="panel section-gap">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title">مركز التنبيهات</h2>
+              <div class="panel-desc">مراجعة الحالات التي اكتشفها النظام</div>
+            </div>
+            <i data-lucide="shield-alert" style="color:var(--orange);width:19px"></i>
+          </div>
+          <div class="warning-list" id="warningList">
+            <div class="empty">جاري فحص التنبيهات...</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span><strong>BBE Warehouse Management System</strong> · Inventory Control</span>
+      <span>مصدر البيانات: Google Sheets · <span id="footerStatus">غير متصل</span></span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  /*
+   * IMPORTANT:
+   * Replace this value with the deployed Google Apps Script Web App URL.
+   * It normally ends with /exec
+   */
+  const API_URL = "https://script.google.com/macros/s/AKfycbxxw_wZ0qds7sXKmJ-u4yctrL3s3AQOBat0VsBM_8_FzwNGm-pUap3ZifUTfmT5UE9d/exec";
+
+  let dashboardData = null;
+  let requestTimer = null;
+
+  const $ = (id) => document.getElementById(id);
+  const numberFormat = new Intl.NumberFormat("en-US");
+
+  function formatNumber(value) {
+    return numberFormat.format(Number(value) || 0);
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function formatDate(value) {
+    if (!value) return "غير متاح";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "غير متاح";
+    return new Intl.DateTimeFormat("ar-EG", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(date);
+  }
+
+  function showNotice(message, type = "error") {
+    const notice = $("notice");
+    notice.className = "notice " + type;
+    notice.textContent = message;
+  }
+
+  function hideNotice() {
+    $("notice").className = "notice";
+    $("notice").textContent = "";
+  }
+
+  function setConnection(connected, message) {
+    $("connectionText").textContent = message;
+    $("footerStatus").textContent = connected ? "متصل" : "غير متصل";
+  }
+
+  /*
+   * JSONP allows the GitHub Pages website to request data from Apps Script
+   * without a normal cross-origin fetch request.
+   */
+  function apiRequest(action) {
+    return new Promise((resolve, reject) => {
+      if (!API_URL || API_URL.includes("PASTE_YOUR_APPS_SCRIPT")) {
+        reject(new Error("لسه ما أضفناش رابط Google Apps Script في الكود."));
+        return;
+      }
+
+      const callbackName = "__bbe_callback_" +
+        Date.now() + "_" + Math.floor(Math.random() * 100000);
+
+      const script = document.createElement("script");
+      const timeout = setTimeout(() => {
+        cleanup();
+        reject(new Error("انتهت مهلة الاتصال. تأكد من نشر Apps Script وصلاحيات الوصول."));
+      }, 20000);
+
+      function cleanup() {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[callbackName] = (data) => {
+        cleanup();
+        if (!data || data.success === false) {
+          reject(new Error(data?.error || "تعذر استلام البيانات."));
+          return;
+        }
+        resolve(data);
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("فشل الاتصال بمصدر البيانات. راجع رابط Web App وإعدادات النشر."));
+      };
+
+      const separator = API_URL.includes("?") ? "&" : "?";
+      script.src = API_URL + separator +
+        "action=" + encodeURIComponent(action) +
+        "&callback=" + encodeURIComponent(callbackName) +
+        "&_=" + Date.now();
+
+      document.body.appendChild(script);
+    });
+  }
+
+  async function loadDashboard() {
+    const button = $("refreshBtn");
+    button.disabled = true;
+    button.innerHTML = '<i data-lucide="loader-circle"></i> جاري التحديث...';
+    if (window.lucide) lucide.createIcons();
+
+    try {
+      hideNotice();
+      const data = await apiRequest("getDashboardData");
+      dashboardData = data;
+
+      renderSummary();
+      renderWarehouseFilter();
+      renderWarehouses();
+      renderProducts();
+      renderTransfers();
+      renderWarnings();
+
+      setConnection(true, "متصل بالبيانات");
+      $("lastUpdated").textContent = "آخر تحديث: " + formatDate(data.generatedAt);
+      showNotice("تم تحميل البيانات بنجاح.", "success");
+      setTimeout(hideNotice, 3000);
+    } catch (error) {
+      setConnection(false, "تعذر الاتصال");
+      showNotice(error.message || "حدث خطأ أثناء تحميل البيانات.");
+      if (!dashboardData) {
+        $("productRows").innerHTML =
+          '<tr><td colspan="4"><div class="empty">لم يتم تحميل البيانات بعد. تأكد من رابط API ثم اضغط تحديث البيانات.</div></td></tr>';
+        $("warehouseList").innerHTML =
+          '<div class="empty">المخازن ستظهر بعد نجاح الاتصال بمصدر البيانات.</div>';
+        $("recentTransfers").innerHTML =
+          '<div class="empty">لا توجد بيانات معروضة حاليًا.</div>';
+        $("warningList").innerHTML =
+          '<div class="empty">لا توجد بيانات معروضة حاليًا.</div>';
+      }
+    } finally {
+      button.disabled = false;
+      button.innerHTML = '<i data-lucide="refresh-cw"></i> تحديث البيانات';
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+
+  function renderSummary() {
+    if (!dashboardData) return;
+
+    $("totalUnits").textContent = formatNumber(dashboardData.totalUnits);
+    $("warehouseCount").textContent = formatNumber(dashboardData.counts?.warehouses);
+    $("productCount").textContent = formatNumber(dashboardData.counts?.products);
+    $("warningCount").textContent = formatNumber(dashboardData.warnings?.length);
+  }
+
+  function renderWarehouseFilter() {
+    const select = $("warehouseFilter");
+    const previousValue = select.value;
+    const warehouses = dashboardData?.warehouses || [];
+
+    select.innerHTML = '<option value="">كل المخازن</option>' +
+      warehouses.map(item =>
+        `<option value="${escapeHTML(item.warehouse)}">${escapeHTML(item.warehouse)}</option>`
+      ).join("");
+
+    if (warehouses.some(item => item.warehouse === previousValue)) {
+      select.value = previousValue;
+    }
+  }
+
+  function onWarehouseChange() {
+    renderProducts();
+    renderWarehouses();
+  }
+
+  function renderProducts() {
+    if (!dashboardData) return;
+
+    const search = $("productSearch").value.trim().toLocaleLowerCase("ar");
+    const warehouseName = $("warehouseFilter").value;
+    const stockFilter = $("stockFilter").value;
+
+    $("quantityHeader").textContent = warehouseName ? "رصيد المخزن" : "إجمالي الرصيد";
+    $("tableSubtitle").textContent = warehouseName
+      ? "أرصدة الأصناف داخل: " + warehouseName
+      : "الرصيد الحالي على مستوى جميع المخازن";
+
+    const warehouses = dashboardData.warehouses || [];
+    const totals = new Map((dashboardData.itemTotals || []).map(item => [item.product, Number(item.quantity) || 0]));
+
+    let products = (dashboardData.products || []).map(product => {
+      const total = totals.get(product) || 0;
+      const selectedWarehouse = warehouses.find(item => item.warehouse === warehouseName);
+      const quantity = warehouseName
+        ? Number(selectedWarehouse?.balances?.[product]) || 0
+        : total;
+
+      return { product, quantity, total };
+    });
+
+    products = products.filter(item => item.product.toLocaleLowerCase("ar").includes(search));
+
+    if (stockFilter === "available") products = products.filter(item => item.quantity > 0);
+    if (stockFilter === "zero") products = products.filter(item => item.quantity === 0);
+    if (stockFilter === "negative") products = products.filter(item => item.quantity < 0);
+
+    const tbody = $("productRows");
+
+    if (!products.length) {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty">لا توجد أصناف مطابقة لبحثك.</div></td></tr>';
+      $("productResultCount").textContent = "عدد النتائج: 0";
+      return;
+    }
+
+    tbody.innerHTML = products.map((item, index) => {
+      const quantityClass = item.quantity < 0 ? "negative" : item.quantity === 0 ? "zero" : "";
+      const status = item.quantity < 0
+        ? '<span class="pill danger">رصيد سالب</span>'
+        : item.quantity === 0
+          ? '<span class="pill empty">نفد الرصيد</span>'
+          : '<span class="pill">متاح</span>';
+
+      return `<tr>
+        <td style="color:#77869d">${index + 1}</td>
+        <td><div class="product-name">${escapeHTML(item.product)}</div>
+          <div class="product-code">ITEM-${String(index + 1).padStart(3, "0")}</div>
+        </td>
+        <td><span class="qty ${quantityClass}">${formatNumber(item.quantity)}</span></td>
+        <td>${status}</td>
+      </tr>`;
+    }).join("");
+
+    $("productResultCount").textContent =
+      `عرض ${formatNumber(products.length)} صنف` +
+      (warehouseName ? " · مخزن محدد" : " · جميع المخازن");
+  }
+
+  function renderWarehouses() {
+    if (!dashboardData) return;
+
+    const selected = $("warehouseFilter").value;
+    let warehouses = dashboardData.warehouses || [];
+
+    if (selected) {
+      warehouses = warehouses.filter(item => item.warehouse === selected);
+    }
+
+    if (!warehouses.length) {
+      $("warehouseList").innerHTML = '<div class="empty">لا توجد مخازن مسجلة.</div>';
+      return;
+    }
+
+    $("warehouseList").innerHTML = warehouses.map(item => {
+      const selectedClass = selected === item.warehouse ? "selected" : "";
+      return `<button class="warehouse-card ${selectedClass}"
+        onclick="selectWarehouse('${escapeHTML(item.warehouse).replace(/'/g, '&#039;')}')">
+        <div class="warehouse-top">
+          <div class="warehouse-icon"><i data-lucide="warehouse"></i></div>
+          <div>
+            <div class="warehouse-name">${escapeHTML(item.warehouse)}</div>
+            <div class="warehouse-meta">آخر جرد: ${formatDate(item.snapshotDate)}</div>
+          </div>
+        </div>
+        <div class="warehouse-total">
+          <strong>${formatNumber(item.totalUnits)}</strong>
+          <span>وحدة بالمخزن</span>
+        </div>
+      </button>`;
+    }).join("");
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function selectWarehouse(name) {
+    const select = $("warehouseFilter");
+    const current = Array.from(select.options).find(option => option.text === name);
+    if (current) select.value = current.value;
+    else select.value = name;
+    onWarehouseChange();
+    $("productSearch").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function renderTransfers() {
+    if (!dashboardData) return;
+
+    const transfers = dashboardData.recentTransfers || [];
+    const container = $("recentTransfers");
+
+    if (!transfers.length) {
+      container.innerHTML = '<div class="empty">لا توجد تحويلات مسجلة حتى الآن.</div>';
+      return;
+    }
+
+    container.innerHTML = transfers.map(item => {
+      const itemCount = Object.values(item.quantities || {}).filter(q => Number(q) > 0).length;
+
+      return `<div class="activity">
+        <div class="activity-icon"><i data-lucide="arrow-left-right"></i></div>
+        <div style="min-width:0;flex:1">
+          <div class="activity-title">${escapeHTML(item.source)} <span style="color:var(--accent)">←</span> ${escapeHTML(item.destination)}</div>
+          <div class="activity-desc">${formatNumber(itemCount)} صنف بحركة كمية موجبة</div>
+          <div class="activity-date">${formatDate(item.timestamp)}</div>
+        </div>
+      </div>`;
+    }).join("");
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function renderWarnings() {
+    if (!dashboardData) return;
+
+    const warnings = dashboardData.warnings || [];
+    const container = $("warningList");
+
+    if (!warnings.length) {
+      container.innerHTML = `
+        <div class="empty">
+          <i data-lucide="shield-check"></i>
+          لا توجد تنبيهات في نتائج الفحص الحالي.
+        </div>`;
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+
+    container.innerHTML = warnings.slice(0, 30).map(warning => {
+      const titleMap = {
+        NEGATIVE_BALANCE: "رصيد سالب",
+        INVALID_TRANSFER: "تحويل غير صحيح",
+        INVALID_QUANTITY: "كمية غير صحيحة"
+      };
+
+      const details = [
+        warning.warehouse ? "المخزن: " + warning.warehouse : "",
+        warning.product ? "الصنف: " + warning.product : "",
+        warning.source ? "من: " + warning.source : "",
+        warning.destination ? "إلى: " + warning.destination : "",
+        warning.balance !== undefined ? "الرصيد: " + warning.balance : "",
+        warning.message || ""
+      ].filter(Boolean).join(" · ");
+
+      return `<div class="warning-item">
+        <div class="warning-title">${escapeHTML(titleMap[warning.type] || "تنبيه بيانات")}</div>
+        <div class="warning-desc">${escapeHTML(details)}</div>
+      </div>`;
+    }).join("");
+  }
+
+  function exportCSV() {
+    if (!dashboardData) {
+      showNotice("حمّل البيانات أولًا قبل التصدير.");
+      return;
+    }
+
+    const warehouseName = $("warehouseFilter").value;
+    const warehouses = dashboardData.warehouses || [];
+    const totals = new Map((dashboardData.itemTotals || []).map(item => [item.product, Number(item.quantity) || 0]));
+
+    const rows = [["الصنف", warehouseName || "إجمالي الرصيد", "الحالة"]];
+
+    (dashboardData.products || []).forEach(product => {
+      const warehouse = warehouses.find(item => item.warehouse === warehouseName);
+      const quantity = warehouseName
+        ? Number(warehouse?.balances?.[product]) || 0
+        : totals.get(product) || 0;
+
+      const status = quantity < 0 ? "رصيد سالب" : quantity === 0 ? "صفر" : "متاح";
+      rows.push([product, quantity, status]);
+    });
+
+    const csv = "\uFEFF" + rows.map(row =>
+      row.map(value => '"' + String(value ?? "").replace(/"/g, '""') + '"').join(",")
+    ).join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "BBE_Warehouse_Balances.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  if (window.lucide) lucide.createIcons();
+  loadDashboard();
+</script>
+</body>
+</html>
